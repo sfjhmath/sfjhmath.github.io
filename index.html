@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Rapid Algebra</title>
-    <link rel="stylesheet" href="/resources/styles.css">
+    <link rel="stylesheet" href="styles.css">
     <script>
         MathJax = {
           tex: {
@@ -88,11 +88,11 @@
                 document.getElementById("nice").hidden = false;
                 if (document.getElementById("user-input").value.trim() === eq[1]) {
                     document.getElementById("nice").width = 150;
-                    document.getElementById("nice").src = "/resources/check.png";
+                    document.getElementById("nice").src = "check.png";
 
                 } else {
                     document.getElementById("nice").width = 100;
-                    document.getElementById("nice").src = "/resources/x.png";
+                    document.getElementById("nice").src = "x.png";
                 }
             });
 
@@ -115,7 +115,7 @@
         <button class="button" id="next">Next</button>
     </div>
     <div id="pic">
-        <img id="nice" src="/resources/nice.jpg" alt="Image couldn't load :(" width="150", height="auto" hidden>
+        <img id="nice" src="nice.jpg" alt="Image couldn't load :(" width="150", height="auto" hidden>
     </div>
 </body>
 </html>
