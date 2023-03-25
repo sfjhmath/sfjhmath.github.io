@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rapid Algebra</title>
+    <link rel="stylesheet" href="/resources/styles.css">
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+          },
+          svg: {
+            fontCache: 'global'
+          }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/all.min.js"></script>
+    <script type="text/javascript">
+        function randint(min, max) {
+            return Math.floor(Math.random() * (max - min) + min);
+        }
+
+        function build() {
+            let vars = ["a", "b", "c", "d", "f", "g", "h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+            let varChoice = vars[randint(0, vars.length)]
+            let exp = [varChoice, randint(1, 7)]
+
+            document.getElementById("input-label").innerHTML = `$${varChoice} =$`
+
+            let xPos = randint(0, 2);
+            if (xPos === 1) {
+                exp[0] += "^2";
+                exp[1] = Math.pow(randint(1, 7), 2);
+            }
+
+            if (randint(0, 2) === 0) {
+                if (exp[0] === `${varChoice}^2`) {
+                    let temp = randint(2, 4);
+                    exp[0] = `${exp[0]}/${temp}`;
+                    exp[1] *= temp;
+                } else {
+                    if (randint(0, 2) === 0) {
+                        exp[0] = `${exp[0]}/${randint(1, 13)}`;
+                    } else {
+                        exp[0] = `${randint(2, 13) * exp[1]}/${exp[0]}`
+                    }
+                }
+            }
+
+            let mod = "";
+            for(let i = 0; i < 2; i++) {
+                let temp = randint(1, 13);
+                if (randint(0, 2) === 0) {
+                    mod += `+${temp}`;
+                } else {
+                    mod += `-${temp}`;
+                }
+            }
+
+            if (nerdamer(exp[0] + mod).toString() === varChoice) {
+                document.getElementById("nice").hidden = false;
+            } else {
+                document.getElementById("nice").hidden = true;
+            }
+
+            let ansRaw = window.nerdamer.solve(`${nerdamer(exp[0] + mod).toString()}=${nerdamer(exp[1] + mod).toString()}`, varChoice).toString();
+            let ans = ansRaw.substring(1, ansRaw.length - 1);
+
+            if (ans.includes(",")) {
+                ans = ans.split(",")[0];
+            }
+
+            if (randint(0, 2) === 0) {
+                return [`$$${nerdamer(exp[0] + mod).toTeX()}=${nerdamer(exp[1] + mod).toTeX()}$$`, ans];
+            } else {
+                return [`$$${nerdamer(exp[1] + mod).toTeX()}=${nerdamer(exp[0] + mod).toTeX()}$$`, ans];
+            }
+        }
+
+        $(document).ready(() => {
+            let eq = build();
+            document.getElementById("equation").innerHTML = eq[0];
+            MathJax.typeset();
+
+            $("#evaluate").click(() => {
+                document.getElementById("nice").hidden = false;
+                if (document.getElementById("user-input").value.trim() === eq[1]) {
+                    document.getElementById("nice").width = 150;
+                    document.getElementById("nice").src = "/resources/check.png";
+
+                } else {
+                    document.getElementById("nice").width = 100;
+                    document.getElementById("nice").src = "/resources/x.png";
+                }
+            });
+
+            $("#next").click(() => {
+                eq = build();
+                document.getElementById("user-input").value = "";
+                document.getElementById("equation").innerHTML = eq[0];
+                MathJax.typeset();
+            })
+        });
+    </script>
+</head>
+<body>
+    <div id="main-container">
+<!--        <p id="score">Score = 0</p>-->
+        <p id="equation">loading...</p>
+        <label for="user-input" id="input-label"></label>
+        <input id="user-input"><br><br>
+        <button class="button" id="evaluate">Try</button>
+        <button class="button" id="next">Next</button>
+    </div>
+    <div id="pic">
+        <img id="nice" src="/resources/nice.jpg" alt="Image couldn't load :(" width="150", height="auto" hidden>
+    </div>
+</body>
+</html>
