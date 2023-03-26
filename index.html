@@ -21,19 +21,15 @@
     <script type="text/javascript">
         let guesses = 0;
         let vars = ["a", "b", "c", "d", "f", "g", "h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-        let varChoice = vars[randint(0, vars.length)]
+        let varChoice;
 
         function randint(min, max) {
             return Math.floor(Math.random() * (max - min) + min);
         }
 
-        function funny() {
-            document.getElementById("guess").src = "nice.jpg";
-            document.getElementById("guess").hidden = false;
-        }
-
         function build() {
-            let exp = [varChoice, randint(1, 7)]
+            varChoice = vars[randint(0, vars.length)];
+            let exp = [varChoice, randint(-7, 7)];
 
             document.getElementById("input-label").innerHTML = `$${varChoice} =$`
 
@@ -50,9 +46,9 @@
                     exp[1] *= temp;
                 } else {
                     if (randint(0, 2) === 0) {
-                        exp[0] = `${exp[0]}/${randint(1, 13)}`;
+                        exp[0] = `${exp[0]}/${randint(-12, 13)}`;
                     } else {
-                        exp[0] = `${randint(2, 13) * exp[1]}/${exp[0]}`
+                        exp[0] = `${randint(-12, 13) * exp[1]}/${exp[0]}`
                     }
                 }
             }
@@ -84,7 +80,7 @@
             if (randint(0, 2) === 0) {
                 return [`$$${nerdamer(exp[0] + mod).toTeX()}=${nerdamer(exp[1] + mod).toTeX()}$$`, ans];
             } else {
-                return [`$$${nerdamer(exp[1] + mod).toTeX()}=${nerdamer(exp[0] + mod).toTeX()}$$`, ans];
+                return [`$$${nerdamer(exp[0] + mod).toTeX()}=${nerdamer(exp[1] + mod).toTeX()}$$`, ans];
             }
         }
 
@@ -99,7 +95,7 @@
                     document.getElementById("guess").width = 150;
                     document.getElementById("guess").src = "check.png";
                     guesses = 0;
-                } else if (document.getElementById("user-input").value.trim() !== eq[1]) {
+                } else {
                     guesses++;
                 }
 
@@ -120,15 +116,15 @@
             });
 
             $("#next").click(() => {
-                eq = build();
-                guesses = 0;
                 document.getElementById("user-input").value = "";
-                document.getElementById("equation").innerHTML = eq[0];
                 document.getElementById("guess").hidden = true;
                 document.getElementById("guess2").hidden = true;
                 document.getElementById("ans-div").hidden = true;
                 document.getElementById("evaluate").disabled = false;
                 document.getElementById("evaluate").style.opacity = "100%";
+                guesses = 0;
+                eq = build();
+                document.getElementById("equation").innerHTML = eq[0];
                 MathJax.typeset();
             });
         });
