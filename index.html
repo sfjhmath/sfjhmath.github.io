@@ -17,14 +17,22 @@
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/all.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script type="text/javascript">
+        let guesses = 0;
+        let vars = ["a", "b", "c", "d", "f", "g", "h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+        let varChoice = vars[randint(0, vars.length)]
+
         function randint(min, max) {
             return Math.floor(Math.random() * (max - min) + min);
         }
 
+        function funny() {
+            document.getElementById("guess").src = "nice.jpg";
+            document.getElementById("guess").hidden = false;
+        }
+
         function build() {
-            let vars = ["a", "b", "c", "d", "f", "g", "h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-            let varChoice = vars[randint(0, vars.length)]
             let exp = [varChoice, randint(1, 7)]
 
             document.getElementById("input-label").innerHTML = `$${varChoice} =$`
@@ -60,9 +68,10 @@
             }
 
             if (nerdamer(exp[0] + mod).toString() === varChoice) {
-                document.getElementById("nice").hidden = false;
+                document.getElementById("guess").src = "nice.jpg";
+                document.getElementById("guess").hidden = false;
             } else {
-                document.getElementById("nice").hidden = true;
+                document.getElementById("guess").hidden = true;
             }
 
             let ansRaw = window.nerdamer.solve(`${nerdamer(exp[0] + mod).toString()}=${nerdamer(exp[1] + mod).toString()}`, varChoice).toString();
@@ -85,23 +94,43 @@
             MathJax.typeset();
 
             $("#evaluate").click(() => {
-                document.getElementById("nice").hidden = false;
                 if (document.getElementById("user-input").value.trim() === eq[1]) {
-                    document.getElementById("nice").width = 150;
-                    document.getElementById("nice").src = "check.png";
+                    document.getElementById("guess").hidden = false;
+                    document.getElementById("guess").width = 150;
+                    document.getElementById("guess").src = "check.png";
+                    guesses = 0;
+                } else if (document.getElementById("user-input").value.trim() !== eq[1]) {
+                    guesses++;
+                }
 
-                } else {
-                    document.getElementById("nice").width = 100;
-                    document.getElementById("nice").src = "x.png";
+                if (guesses === 1) {
+                    document.getElementById("guess").hidden = false;
+                    document.getElementById("guess").width = 100;
+                    document.getElementById("guess").src = "x.png";
+                } else if (guesses === 2) {
+                    document.getElementById("guess2").hidden = false;
+                    document.getElementById("guess2").width = 100;
+                    document.getElementById("guess2").src = "x.png";
+                    document.getElementById("evaluate").disabled = true;
+                    document.getElementById("evaluate").style.opacity = "50%";
+                    document.getElementById("ans").innerHTML = `$${varChoice}=${eq[1]}$`;
+                    document.getElementById("ans-div").hidden = false;
+                    MathJax.typeset();
                 }
             });
 
             $("#next").click(() => {
                 eq = build();
+                guesses = 0;
                 document.getElementById("user-input").value = "";
                 document.getElementById("equation").innerHTML = eq[0];
+                document.getElementById("guess").hidden = true;
+                document.getElementById("guess2").hidden = true;
+                document.getElementById("ans-div").hidden = true;
+                document.getElementById("evaluate").disabled = false;
+                document.getElementById("evaluate").style.opacity = "100%";
                 MathJax.typeset();
-            })
+            });
         });
     </script>
 </head>
@@ -115,7 +144,11 @@
         <button class="button" id="next">Next</button>
     </div>
     <div id="pic">
-        <img id="nice" src="nice.jpg" alt="Image couldn't load :(" width="150", height="auto" hidden>
+        <img id="guess" src="nice.jpg" alt="Image couldn't load :(" width="150", height="auto" hidden>
+        <img id="guess2" src="nice.jpg" alt="Image couldn't load :(" width="150", height="auto" hidden>
+    </div>
+    <div id="ans-div" hidden>
+        <p id="ans">ans</p>
     </div>
 </body>
 </html>
