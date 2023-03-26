@@ -23,13 +23,18 @@
         let vars = ["a", "b", "c", "d", "f", "g", "h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
         let varChoice;
 
-        function randint(min, max) {
-            return Math.floor(Math.random() * (max - min) + min);
+        function randint(min, max, spec=false) {
+            if (spec) {
+                let num = Math.floor(Math.random() * (max - min) + min);
+                return num === 0 ? randint(min, max) : num;
+            } else {
+                return Math.floor(Math.random() * (max - min) + min);
+            }
         }
 
         function build() {
             varChoice = vars[randint(0, vars.length)];
-            let exp = [varChoice, randint(-7, 7)];
+            let exp = [varChoice, randint(-10, 3, true)];
 
             document.getElementById("input-label").innerHTML = `$${varChoice} =$`
 
@@ -46,9 +51,9 @@
                     exp[1] *= temp;
                 } else {
                     if (randint(0, 2) === 0) {
-                        exp[0] = `${exp[0]}/${randint(-12, 13)}`;
+                        exp[0] = `${exp[0]}/${randint(2, 13)}`;
                     } else {
-                        exp[0] = `${randint(-12, 13) * exp[1]}/${exp[0]}`
+                        exp[0] = `${randint(-12, 13, true) * exp[1]}/${exp[0]}`
                     }
                 }
             }
@@ -84,9 +89,14 @@
             }
         }
 
+        function todayDate(){
+            return document.getElementById("date").innerHTML = (new Date()).getFullYear() + "  ";
+        }
+
         $(document).ready(() => {
             let eq = build();
             document.getElementById("equation").innerHTML = eq[0];
+            document.getElementById("date").innerHTML = (new Date()).getFullYear() + "  ";
             MathJax.typeset();
 
             $("#evaluate").click(() => {
@@ -147,4 +157,7 @@
         <p id="ans">ans</p>
     </div>
 </body>
+<footer>
+    &copy;&nbsp;<p id="date"></p>&nbsp;Thierry Laforge
+</footer>
 </html>
