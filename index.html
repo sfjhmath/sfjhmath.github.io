@@ -22,6 +22,24 @@
         let guesses = 0;
         let vars = ["a", "b", "c", "d", "f", "g", "h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
         let varChoice;
+        let eq;
+        let time = 16;
+        let answered = false;
+            if (time > 0) {
+                time -= 1;
+                document.getElementById("ans").innerHTML = `time left: ${time}`;
+
+                if (document.getElementById("check").checked === true && answered === false) {
+                    document.getElementById("ans-div").hidden = false;
+                    MathJax.typeset();
+                }
+
+            } else {
+                if (document.getElementById("check").checked === true) {
+                    dispAns();
+                }
+            }
+        }, 1000)
 
         function randint(min, max, spec=false) {
             if (spec) {
@@ -93,8 +111,16 @@
             return document.getElementById("date").innerHTML = (new Date()).getFullYear() + "  ";
         }
 
+        function dispAns() {
+            document.getElementById("evaluate").disabled = true;
+            document.getElementById("evaluate").style.opacity = "50%";
+            document.getElementById("ans").innerHTML = `$${varChoice}=${eq[1]}$`;
+            document.getElementById("ans-div").hidden = false;
+            MathJax.typeset();
+        }
+
         $(document).ready(() => {
-            let eq = build();
+            eq = build();
             document.getElementById("equation").innerHTML = eq[0];
             document.getElementById("date").innerHTML = (new Date()).getFullYear() + "  ";
             MathJax.typeset();
@@ -104,6 +130,9 @@
                     document.getElementById("guess").hidden = false;
                     document.getElementById("guess").width = 150;
                     document.getElementById("guess").src = "check.png";
+                    time = 99999;
+                    answered = true;
+                    document.getElementById("ans-div").hidden = true;
                     guesses = 0;
                 } else {
                     guesses++;
@@ -133,16 +162,28 @@
                 document.getElementById("evaluate").disabled = false;
                 document.getElementById("evaluate").style.opacity = "100%";
                 guesses = 0;
+                answered = false;
+                time = 16;
                 eq = build();
                 document.getElementById("equation").innerHTML = eq[0];
                 MathJax.typeset();
             });
+
+            $("#check").click(() => {
+                document.getElementById("ans-div").hidden = !document.getElementById("check").checked;
+            })
         });
     </script>
 </head>
 <body>
+    <div id="timer">
+        Timer&nbsp;
+        <label class="switch">
+            <input id="check" type="checkbox" checked>
+            <span class="slider round"></span>
+        </label>
+    </div><br>
     <div id="main-container">
-<!--        <p id="score">Score = 0</p>-->
         <p id="equation">loading...</p>
         <label for="user-input" id="input-label"></label>
         <input id="user-input"/><br><br>
@@ -150,11 +191,11 @@
         <button class="button" id="next">Next</button>
     </div>
     <div id="pic">
-        <img id="guess" src="nice.jpg" alt="Image couldn't load :(" width="150", height="auto" hidden>
-        <img id="guess2" src="nice.jpg" alt="Image couldn't load :(" width="150", height="auto" hidden>
+        <img id="guess" src="nice.jpg" alt="Image couldn't load :(" width="150" , height="auto" hidden>
+        <img id="guess2" src="nice.jpg" alt="Image couldn't load :(" width="150" , height="auto" hidden>
     </div>
-    <div id="ans-div" hidden>
-        <p id="ans">ans</p>
+    <div id="ans-div">
+        <p id="ans">Good luck!</p>
     </div>
     <div id="sflogo-div">
         <img src="sflogo.png" alt="Wildcats" width="250" height="auto">
