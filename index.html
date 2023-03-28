@@ -25,6 +25,7 @@
         let eq;
         let time = 16;
         let answered = false;
+        let intervalID = window.setInterval(() => {
             if (time > 0) {
                 time -= 1;
                 document.getElementById("ans").innerHTML = `time left: ${time}`;
