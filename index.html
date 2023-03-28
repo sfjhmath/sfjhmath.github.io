@@ -23,7 +23,7 @@
         let vars = ["a", "b", "c", "d", "f", "g", "h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
         let varChoice;
         let eq;
-        let time = 16;
+        let time = 26;
         let answered = false;
         let intervalID = window.setInterval(() => {
             if (time > 0) {
@@ -163,7 +163,7 @@
                 document.getElementById("evaluate").disabled = false;
                 document.getElementById("evaluate").style.opacity = "100%";
                 guesses = 0;
-                time = 16;
+                time = 26;
                 eq = build();
                 document.getElementById("equation").innerHTML = eq[0];
                 MathJax.typeset();
