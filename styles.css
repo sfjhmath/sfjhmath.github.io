@@ -76,6 +76,7 @@ footer {
 	display: flex;
 	justify-content: right;
 	align-items: center;
+	font-size: 30px;
 }
 
 /* The switch - the box around the slider */
