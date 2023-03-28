@@ -167,6 +167,7 @@
                 eq = build();
                 document.getElementById("equation").innerHTML = eq[0];
                 MathJax.typeset();
+                window.clearInterval(intervalID);
                 intervalID = window.setInterval(() => {
                     if (time > 0) {
                         time -= 1;
