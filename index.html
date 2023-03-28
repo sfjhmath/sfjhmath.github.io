@@ -131,9 +131,8 @@
                     document.getElementById("guess").hidden = false;
                     document.getElementById("guess").width = 150;
                     document.getElementById("guess").src = "check.png";
-                    time = 99999;
-                    answered = true;
                     document.getElementById("ans-div").hidden = true;
+                    window.clearInterval(intervalID);
                     guesses = 0;
                 } else {
                     guesses++;
@@ -152,6 +151,7 @@
                     document.getElementById("ans").innerHTML = `$${varChoice}=${eq[1]}$`;
                     document.getElementById("ans-div").hidden = false;
                     MathJax.typeset();
+                    window.clearInterval(intervalID);
                 }
             });
 
@@ -163,11 +163,26 @@
                 document.getElementById("evaluate").disabled = false;
                 document.getElementById("evaluate").style.opacity = "100%";
                 guesses = 0;
-                answered = false;
                 time = 16;
                 eq = build();
                 document.getElementById("equation").innerHTML = eq[0];
                 MathJax.typeset();
+                intervalID = window.setInterval(() => {
+                    if (time > 0) {
+                        time -= 1;
+                        document.getElementById("ans").innerHTML = `time left: ${time}`;
+
+                        if (document.getElementById("check").checked === true && answered === false) {
+                            document.getElementById("ans-div").hidden = false;
+                            MathJax.typeset();
+                        }
+
+                    } else {
+                        if (document.getElementById("check").checked === true) {
+                            dispAns();
+                        }
+                    }
+                }, 1000);
             });
 
             $("#check").click(() => {
